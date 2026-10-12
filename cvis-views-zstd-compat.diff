@@ -1,0 +1,41 @@
+--- a/replays/views.py
++++ b/replays/views.py
+@@ -4,8 +4,8 @@
+ This source code is licensed under the MIT license found in the
+ LICENSE file in the root directory of this source tree.
+ """
+-import glob, os, time
+-import zstd, json
++import glob, io, os, time
++import zstandard, json
+ from django.shortcuts import render
+ from django.http import HttpResponse, JsonResponse, Http404, FileResponse
+ from django.conf import settings
+@@ -94,15 +94,22 @@
+     )
+     if file is None:
+         raise Http404("No such file")
+-    fh = open(file, 'rb')
+-    cctx = zstd.ZstdDecompressor()
+-    reader = cctx.stream_reader(fh)
++    # zstd-compat: decompress with the `zstandard` package (which provides the
++    # streaming API this endpoint was written against) and serve plain files
++    # as-is, so both Stardust-style compressed partitions and single-file
++    # plain traces work through this endpoint.
++    with open(file, 'rb') as fh:
++        data = fh.read()
++    try:
++        data = zstandard.ZstdDecompressor().stream_reader(io.BytesIO(data)).read()
++    except Exception:
++        pass
+     if not file.endswith('.zstd.stream'):
+-        return FileResponse(reader)
++        return FileResponse(io.BytesIO(data))
+ 
+     result = {}
+     decoder = json.JSONDecoder()
+-    data = reader.read().decode('ascii')
++    data = data.decode('ascii')
+     while len(data) > 0:
+         it, end = decoder.raw_decode(data)
+         data = data[end:]

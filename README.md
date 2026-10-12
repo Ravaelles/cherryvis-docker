@@ -1,9 +1,10 @@
 # cherryvis-docker
-Runs CherryVis in Docker
+Runs CherryVis in Docker, based on https://github.com/bmnielsen/cherryvis-docker with some tweaks and updates. 
+Tested on Ubuntu, October 2026.
 
 ## Usage
 
-1. `git clone https://github.com/bmnielsen/cherryvis-docker`
+1. `git clone https://github.com/Ravaelles/cherryvis-docker`
 2. `cd cherryvis-docker`
 3. `docker build -t cvis .`
 4. `docker run -p 8770:8770 -it cvis`
