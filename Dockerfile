@@ -19,7 +19,13 @@ COPY cvis-views-zstd-compat.diff /tmp/cvis-views-zstd-compat.diff
 RUN cd /src/TorchCraftAI/scripts/cherryvis \
 	&& git apply /tmp/cvis-views-zstd-compat.diff \
 	&& rm /tmp/cvis-views-zstd-compat.diff
-	
+
+# Silence noisy BW<->CP matching debug logs in viewer console.
+COPY cvis-matching-no-console.diff /tmp/cvis-matching-no-console.diff
+RUN cd /src/TorchCraftAI/scripts/cherryvis \
+	&& git apply /tmp/cvis-matching-no-console.diff \
+	&& rm /tmp/cvis-matching-no-console.diff
+
 FROM python:3.10-alpine
 
 COPY --from=builder /src/TorchCraftAI/scripts/cherryvis .

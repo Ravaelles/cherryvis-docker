@@ -1,0 +1,29 @@
+--- a/replays/static/replays/cdb/cvis_dbg_matching.js
++++ b/replays/static/replays/cdb/cvis_dbg_matching.js
+@@ -58,26 +58,7 @@
+     pbar.width(((progress.current_frame / progress.end_frame) * 100) + '%');
+     return null;
+   }
+-  var timeDiff = (new Date() - cvis_state.units_matching.start) / 1000;
+-  console.log("Matching done in " + timeDiff + " secs");
+-
+-  var all_units_to_match = get_all_units_to_match();
+   var matching = Module.get_units_matcher().get_matching();
+-  console.log(
+-    '[BW<->CP Matching] Unable to match',
+-    (all_units_to_match.length - Object.values(matching['cp2internal']).length),
+-    'units');
+-  // Creates a map build_type => number_of_no_match
+-  console.log(new Map(Object.entries(global_data['types_names']).map(function(a){
+-    var no_match = all_units_to_match.filter(u => u['type'] == a[0]
+-      ).filter(u => matching['cp2internal'][u['id']] === undefined);
+-    return [
+-      no_match.length,
+-      a[1],
+-      no_match[0],
+-    ];
+-  }).sort((a, b) => a[0] - b[0]).filter(a => a[0] >= 1).map(
+-    a => [a[1], {'count': a[0], 'sample': a[2]}])));
+   cvis_state.id2bw = matching['cp2internal'];
+   cvis_state.bw2id = matching['internal2cp'];
+   Module.enable_main_update_loop();
