@@ -2,6 +2,14 @@
 Runs CherryVis in Docker, based on https://github.com/bmnielsen/cherryvis-docker with some tweaks and updates. 
 Tested on Ubuntu, October 2026.
 
+## Differences from upstream
+- ⌨️ New hotkeys, as in `bmnielsen/dgant openbw-replay-viewer` v1.4 (`A`/`D` speed, `Z`/`X`/`C`/`V` time jumps, `Q`/`W`/`E`/`R` frame steps, arrow-key camera pan)
+- 📊 Production / Army / Tech strips moved to an always-visible bottom dock with auto-shrinking tiles (`Tech` merges Upgrades + Research)
+- 🎯 `Track` buttons in the `Selected` sidebar auto-activate the newly opened unit/task tab
+- ⏩ Replays start at 4x speed instead of 1x
+- 🖼️ `.canvas-area { margin:-1px; }` edge fix
+- 🔊 Sound fixed: SDL_mixer backend enabled at build time (upstream mutes it), volume defaults to 50%, audio unlocks on first interaction
+
 ## Usage
 
 1. `git clone https://github.com/Ravaelles/cherryvis-docker`
