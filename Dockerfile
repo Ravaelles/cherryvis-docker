@@ -26,6 +26,13 @@ RUN cd /src/TorchCraftAI/scripts/cherryvis \
 	&& git apply /tmp/cvis-matching-no-console.diff \
 	&& rm /tmp/cvis-matching-no-console.diff
 
+# CherryVis hotkeys: Z/X/C/V jumps, Q/W/E/R frame steps, A/D speed, arrows pan
+# (pan via get_screen_info/set_screen_center_position; old WASM disables SDL keys).
+COPY cvis-hotkeys.diff /tmp/cvis-hotkeys.diff
+RUN cd /src/TorchCraftAI/scripts/cherryvis \
+	&& git apply --whitespace=nowarn /tmp/cvis-hotkeys.diff \
+	&& rm /tmp/cvis-hotkeys.diff
+
 FROM python:3.10-alpine
 
 COPY --from=builder /src/TorchCraftAI/scripts/cherryvis .

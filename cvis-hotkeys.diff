@@ -1,0 +1,161 @@
+--- a/replays/static/replays/viewer/infobar.js
++++ b/replays/static/replays/viewer/infobar.js
+@@ -99,18 +99,55 @@
+ 
+   function isWithinHTMLInput(e) {
+     var target = e.target ? e.target : e.srcElement;
++    if (!target) return false;
+     if (target.nodeType == Node.TEXT_NODE)
+       target = target.parentNode;
++    if (!target || !target.tagName) return false;
+ 
+     switch (target.tagName) {
+       case 'INPUT':
+       case 'TEXTAREA':
++      case 'SELECT':
+         return true;
+       default:
+         return false;
+     }
+   }
+ 
++  // Hold-to-pan with arrow keys (JS fallback: old WASM disables SDL keyboard).
++  // Uses the same Embind API as cvis_dbg (get_screen_info / set_screen_center_position).
++  $(document).keydown(function(e) {
++    if (isWithinHTMLInput(e)) {
++      return;
++    }
++    if (typeof main_has_been_called !== 'undefined' && !main_has_been_called) return;
++    var code = e.keyCode || e.which;
++    var step = e.shiftKey ? 300 : 120;
++    var handled = false;
++    switch(code) {
++     case 37: // left
++       pan_camera(-step, 0);
++       handled = true;
++       break;
++     case 38: // up
++       pan_camera(0, -step);
++       handled = true;
++       break;
++     case 39: // right
++       pan_camera(step, 0);
++       handled = true;
++       break;
++     case 40: // down
++       pan_camera(0, step);
++       handled = true;
++       break;
++    }
++    if (handled) {
++      e.preventDefault();
++      return false;
++    }
++  });
++
+   $(document).keyup(function(e) {
+     // Abort if within an HTML input
+     if (isWithinHTMLInput(e)) {
+@@ -127,13 +164,44 @@
+      case 85: // u
+        play_faster();
+        break;
+-     case 90: // z
+      case 68: // d
+        play_slower();
+        break;
++     case 90: // z -> -30s (as in bmnielsen/dgant openbw-replay-viewer v1.4; D is now slower)
++       jump_seconds(-30);
++       break;
++     case 88: // x -> -10s
++       jump_seconds(-10);
++       break;
++     case 67: // c -> +10s
++       jump_seconds(10);
++       break;
++     case 86: // v -> +30s (new viewer)
++     case 66: // b -> +30s (compat with viewer v1.2)
++       jump_seconds(30);
++       break;
++     case 81: // q -> pause + -10 frames
++       ensure_paused();
++       jump_frames(-10);
++       break;
++     case 87: // w -> pause + -1 frame
++       ensure_paused();
++       jump_frames(-1);
++       break;
++     case 69: // e -> pause + +1 frame
++       ensure_paused();
++       jump_frames(1);
++       break;
++     case 82: // r -> pause + +10 frames
++       ensure_paused();
++       jump_frames(10);
++       break;
+      case 83:
+        toggle_sound();
+        break;
++     case 71: // g -> graphs (new viewer; 5 kept below for old habit)
++       toggle_graphs(1);
++       break;
+      case 8: // backspace
+        jump_back(10);
+        break;
+@@ -294,6 +362,48 @@
+   _replay_set_value(3, frame);
+ }
+ 
++// StarCraft runs at ~23.81 fps (1000/42ms per frame); same constant as in
++// bmnielsen/dgant openbw-replay-viewer v1.4 (info-bar.js: const fps = 1000/42).
++var CVIS_FPS = (1000 / 42);
++
++function jump_seconds(seconds) {
++  if (typeof main_has_been_called !== 'undefined' && !main_has_been_called) return;
++  if (typeof _replay_get_value !== 'function' || typeof _replay_set_value !== 'function') return;
++  var frame = Math.max(0, _replay_get_value(2) + Math.round(CVIS_FPS * seconds));
++  _replay_set_value(3, frame);
++}
++
++function jump_frames(frames) {
++  if (typeof main_has_been_called !== 'undefined' && !main_has_been_called) return;
++  if (typeof _replay_get_value !== 'function' || typeof _replay_set_value !== 'function') return;
++  var frame = Math.max(0, _replay_get_value(2) + frames);
++  _replay_set_value(3, frame);
++}
++
++function ensure_paused() {
++  if (typeof main_has_been_called !== 'undefined' && !main_has_been_called) return;
++  if (typeof _replay_get_value !== 'function') return;
++  try {
++    if (_replay_get_value(1) === 0) {
++      toggle_pause();
++    }
++  } catch (e) {}
++}
++
++function pan_camera(dx, dy) {
++  if (typeof main_has_been_called !== 'undefined' && !main_has_been_called) return;
++  if (typeof Module === 'undefined' || !Module) return;
++  if (typeof Module.get_screen_info !== 'function' ||
++      typeof Module.set_screen_center_position !== 'function') return;
++  try {
++    var si = Module.get_screen_info();
++    if (!si) return;
++    var cx = si.screen_x + si.screen_width / 2 + dx;
++    var cy = si.screen_y + si.screen_height / 2 + dy;
++    Module.set_screen_center_position(Math.round(cx), Math.round(cy));
++  } catch (e) {}
++}
++
+ function play_faster() {
+ 
+   var current_speed = _replay_get_value(0);
+@@ -306,6 +416,7 @@
+ function play_slower() {
+ 
+   var current_speed = _replay_get_value(0);
++  if (current_speed <= 1 / 128) return;
+   _replay_set_value(0, current_speed / 2);
+   update_speed(current_speed / 2);
+ }
