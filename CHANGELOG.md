@@ -1,5 +1,25 @@
 # Changelog
 
+## Unreleased — dark mode (repo-visible, requires image rebuild)
+
+Dark mode for the replay list page, implemented as a repository patch so the
+change is tracked in git and baked into the `cvis` image on rebuild.
+
+- `cvis-darkmode.diff` (new): adds `replays/static/replays/darkmode.css`,
+  adds `replays/static/replays/darkmode.js`, wires both into
+  `replays/templates/replays/index.html` (stylesheet link, navbar toggle
+  button `#cvis-theme-toggle`, script tag)
+  - requested control tone in both themes: `input[type="text"]`, `select`,
+    and `#game-slider` use `background-color: #b1b1b1`
+  - dark theme is scoped under `body.cvis-dark` (Open/Closed: upstream
+    stylesheets stay untouched); toggle persists in `localStorage` and falls
+    back to `prefers-color-scheme`
+  - `darkmode.js` follows Single Responsibility (storage, applicator,
+    manager split into `CvisThemeStorage`, `CvisThemeApplicator`,
+    `CvisThemeManager`) with constructor injection
+- `Dockerfile`: appended `COPY` + `git apply` step for `cvis-darkmode.diff`
+- `README.md`: dark mode bullet in Differences from upstream
+
 ## 2026-11-11 — `feature/add-new-hotkeys` (vs `master`)
 
 Hotkey port from `bmnielsen/dgant openbw-replay-viewer v1.4` to CherryVis.

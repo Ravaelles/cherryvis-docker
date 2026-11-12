@@ -9,6 +9,7 @@ Tested on Ubuntu, October 2026.
 - ⏩ Replays start at 4x speed instead of 1x
 - 🖼️ `.canvas-area { margin:-1px; }` edge fix
 - 🔊 Sound fixed: SDL_mixer backend enabled at build time (upstream mutes it), volume defaults to 50%, audio unlocks on first interaction
+- 🌙 Dark mode toggle in the navbar (`Dark mode` / `Light mode`, persisted in `localStorage`, respects `prefers-color-scheme`); text inputs, selects, and `#game-slider` use `background-color: #b1b1b1`
 
 ## Usage
 

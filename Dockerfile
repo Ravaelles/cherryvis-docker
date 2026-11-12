@@ -33,6 +33,14 @@ RUN cd /src/TorchCraftAI/scripts/cherryvis \
 	&& git apply --whitespace=nowarn /tmp/cvis-hotkeys.diff \
 	&& rm /tmp/cvis-hotkeys.diff
 
+# CherryVis dark mode: toggle button plus gray control tone for text inputs,
+# selects, and the game slider. Adds standalone assets without touching
+# upstream stylesheets (Open/Closed Principle).
+COPY cvis-darkmode.diff /tmp/cvis-darkmode.diff
+RUN cd /src/TorchCraftAI/scripts/cherryvis \
+	&& git apply /tmp/cvis-darkmode.diff \
+	&& rm /tmp/cvis-darkmode.diff
+
 FROM python:3.10-alpine
 
 COPY --from=builder /src/TorchCraftAI/scripts/cherryvis .
