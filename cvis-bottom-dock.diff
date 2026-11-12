@@ -1,0 +1,521 @@
+diff --git a/replays/static/replays/viewer/infobar.css b/replays/static/replays/viewer/infobar.css
+index 57029d4..2b88ede 100644
+--- a/replays/static/replays/viewer/infobar.css
++++ b/replays/static/replays/viewer/infobar.css
+@@ -1836,3 +1836,134 @@ table.hover tbody tr:nth-of-type(even):hover {
+       background-image: url("images/faster.svg"); }
+     .replay-control .rv-rc-controls div .rv-rc-slower {
+       background-image: url("images/slower.svg"); }
++
++
++/* Bottom info dock (ported from openbw-replay-viewer v1.4, adapted to CherryVis narrow bottom bar) */
++.bottom-info-dock {
++  flex: 1 1 520px;
++  min-width: 320px;
++  max-width: min(760px, 42vw);
++  min-height: 118px;
++  border-left: 1px solid #181b22;
++  background-color: #2e2e34;
++  overflow: hidden;
++  display: flex;
++  flex-direction: column;
++  position: relative;
++  padding-left: 0;
++  padding-right: 0;
++}
++.bottom-info-dock .info-dock-header {
++  display: grid;
++  grid-template-columns: 2fr 1fr 1fr;
++  align-items: center;
++  background-color: #181b22;
++  border-bottom: 1px solid #181b22;
++  min-height: 20px;
++}
++.bottom-info-dock .info-dock-title {
++  padding: 1px 5px;
++  font-size: 0.8rem;
++  font-weight: 700;
++  color: white;
++  white-space: nowrap;
++  overflow: hidden;
++  text-overflow: ellipsis;
++  text-transform: uppercase;
++}
++.bottom-info-dock #info-dock-body { flex: 1 1 auto; min-height: 0; }
++.bottom-info-dock #info_tab {
++  position: static;
++  display: block !important;
++  top: auto; left: auto;
++  height: 100%;
++  background-color: transparent;
++}
++.bottom-info-dock #info_tab .tabs { display: none; }
++.bottom-info-dock #info_tab .tabs-content {
++  display: grid;
++  grid-template-columns: 2fr 1fr 1fr;
++  height: 100%;
++  border: none;
++  background-color: transparent;
++}
++.bottom-info-dock #info_tab .tabs-content .tabs-panel {
++  display: block !important;
++  min-width: 0;
++  min-height: 78px;
++  padding: 2px 3px;
++  border-left: 1px solid #181b22;
++  position: relative;
++  background-color: transparent;
++}
++.bottom-info-dock #info_tab .tabs-content .tabs-panel:first-child { border-left: 0; }
++.bottom-info-dock #info_tab #info_tab_panel4 { display: none !important; }
++.bottom-info-dock #info_tab .tabs-content .tabs-panel > div {
++  display: flex;
++  align-items: flex-start;
++  gap: 0;
++  overflow: hidden;
++  min-height: 40px;
++  height: 40px;
++}
++.bottom-info-dock #info_tab .tabs-content .tabs-panel > div .info_tab_player_color {
++  flex: 0 0 7.5px; width: 8px; height: 34px;
++  border-left-width: 8px; margin-right: 2px;
++}
++.bottom-info-dock #info_tab .tabs-content .tabs-panel > div .info_tab_content {
++  --tile-width: 36px; --tile-height: 38px; --tile-image-height: 33px;
++  --tile-bar-height: 5px; --tile-badge-font: 0.65rem; --tile-badge-width: 0.9rem; --tile-bar-max: 36px;
++  flex: 1 1 auto; min-width: 0;
++  display: flex; flex-wrap: nowrap; align-items: flex-end; gap: 1px;
++  overflow: hidden; height: 100%; padding: 0;
++}
++.bottom-info-dock #info_tab #info_tab_panel2 .info_tab_content,
++.bottom-info-dock #info_tab #info_tab_panel3 .info_tab_content {
++  --tile-width: 38px; --tile-height: 38px; --tile-image-height: 38px;
++  --tile-bar-height: 0px; --tile-bar-max: 0px;
++}
++.bottom-info-dock #info_tab #info_tab_panel2 .info_tab_content[data-scale="2"],
++.bottom-info-dock #info_tab #info_tab_panel3 .info_tab_content[data-scale="2"] {
++  --tile-width: 18px; --tile-height: 18px; --tile-image-height: 18px; --tile-bar-height: 0px; }
++.bottom-info-dock #info_tab #info_tab_panel2 .info_tab_content[data-scale="3"],
++.bottom-info-dock #info_tab #info_tab_panel3 .info_tab_content[data-scale="3"] {
++  --tile-width: 12px; --tile-height: 12px; --tile-image-height: 12px; --tile-bar-height: 0px; }
++.bottom-info-dock #info_tab #info_tab_panel2 .info_tab_content[data-scale="4"],
++.bottom-info-dock #info_tab #info_tab_panel3 .info_tab_content[data-scale="4"] {
++  --tile-width: 9px; --tile-height: 9px; --tile-image-height: 9px; --tile-bar-height: 0px; }
++.bottom-info-dock #info_tab .tabs-content .tabs-panel > div .info_tab_content[data-scale="2"] {
++  --tile-width: 17px; --tile-height: 19px; --tile-image-height: 16px;
++  --tile-bar-height: 3px; --tile-badge-font: 0.5rem; --tile-badge-width: 0.65rem; --tile-bar-max: 17px; }
++.bottom-info-dock #info_tab .tabs-content .tabs-panel > div .info_tab_content[data-scale="3"] {
++  --tile-width: 12px; --tile-height: 12px; --tile-image-height: 10px;
++  --tile-bar-height: 2px; --tile-badge-font: 0.42rem; --tile-badge-width: 0.55rem; --tile-bar-max: 12px; }
++.bottom-info-dock #info_tab .tabs-content .tabs-panel > div .info_tab_content[data-scale="4"] {
++  --tile-width: 9px; --tile-height: 9px; --tile-image-height: 8px;
++  --tile-bar-height: 1px; --tile-badge-font: 0.34rem; --tile-badge-width: 0.45rem; --tile-bar-max: 9px; }
++.bottom-info-dock #info_tab .tabs-content .tabs-panel > div .info_tab_content[data-scale="2"],
++.bottom-info-dock #info_tab .tabs-content .tabs-panel > div .info_tab_content[data-scale="3"],
++.bottom-info-dock #info_tab .tabs-content .tabs-panel > div .info_tab_content[data-scale="4"] {
++  display: flex; flex-wrap: wrap; align-content: flex-end; }
++.bottom-info-dock #info_tab .tabs-content .tabs-panel > div .info_tab_content[data-scale="dynamic"] {
++  display: flex; flex-wrap: nowrap; align-content: flex-end; }
++.bottom-info-dock #info_tab .tabs-content .tabs-panel > div .info_tab_content > div:not([style*="display: none"]) {
++  flex: 0 0 auto; display: inline-block !important;
++  width: var(--tile-width); height: var(--tile-height); position: relative; }
++.bottom-info-dock #info_tab .tabs-content .tabs-panel > div .info_tab_content > div[style*="display: none"] { display: none !important; }
++.bottom-info-dock #info_tab .tabs-content .tabs-panel div .info_tab_content img {
++  width: var(--tile-width); height: var(--tile-image-height, var(--tile-height)); display: block; margin: 0; padding: 0; }
++.bottom-info-dock #info_tab .tabs-content .tabs-panel div .info_tab_content span {
++  display: block; position: absolute; right: 1px; bottom: 1px; z-index: 1;
++  width: auto; min-width: var(--tile-badge-width); padding: 0 0.15rem;
++  font-size: var(--tile-badge-font); line-height: var(--tile-badge-width);
++  color: white; background-color: #2e2e34; text-align: center; }
++.bottom-info-dock #info_tab .tabs-content .tabs-panel div .info_tab_content .prod_prog_bar {
++  height: var(--tile-bar-height); max-width: var(--tile-bar-max); overflow: hidden; }
++.bottom-info-dock #info_tab #info_tab_panel2 .info_tab_content > div { position: relative; }
++.bottom-info-dock #info_tab #info_tab_panel2 .info_tab_content span { display: block !important; }
++.bottom-info-dock #info_tab #info_tab_panel2 .info_tab_content .army_counter_bar,
++.bottom-info-dock #info_tab #info_tab_panel2 .info_tab_content .prod_prog_bar { display: none !important; }
++.bottom-info-dock #info_tab #info_tab_panel3 .info_tab_content .prod_prog_bar { display: none !important; }
++.info-tab-hidden { display: none !important; }
++
++.canvas-area { margin:-1px; }
+diff --git a/replays/static/replays/viewer/infobar.js b/replays/static/replays/viewer/infobar.js
+index 7f64f00..f2449f7 100644
+--- a/replays/static/replays/viewer/infobar.js
++++ b/replays/static/replays/viewer/infobar.js
+@@ -246,8 +246,10 @@ jQuery(document).ready( function($) {
+   $(window).on('resize', function(){
+     document.getElementById("canvas").innerWidth = window.innerWidth;
+     document.getElementById("canvas").innerHeight = window.innerHeight - 147;
++    if (typeof refresh_info_tab_scales === "function") refresh_info_tab_scales();
+   });
+ 
++
+   $('#game-slider').on('moved.zf.slider', function() {
+     if (isDown || isClicked) {
+       var new_val = document.getElementById("sliderOutput").value / 200;
+@@ -338,22 +340,12 @@ function toggle_graphs(tab_nr) {
+ }
+ 
+ function toggle_info_tab(tab_nr) {
+-
+-   if ($('#info_tab').is(":visible")) {
+-
+-     if ($('#info_tab_panel' + tab_nr).hasClass("is-active")) {
+-       $('#info_tab').toggle();
+-     } else {
+-       $('#tab_link' + tab_nr).click();
+-     }
+-
+-   } else {
+-     $('#info_tab').toggle();
+-     $('#tab_link' + tab_nr).click();
+-   }
+-   if (main_has_been_called) {
++   // Bottom-dock mode: all panels (Production/Army/Tech) are visible at once,
++   // like in bmnielsen/dgant openbw-replay-viewer v1.4. Just refresh data.
++   if (typeof main_has_been_called !== 'undefined' && main_has_been_called) {
+      update_info_tab();
+    }
++   if (typeof refresh_info_tab_scales === "function") refresh_info_tab_scales();
+ }
+ 
+ function jump_back(seconds) {
+@@ -421,7 +413,6 @@ function play_slower() {
+   update_speed(current_speed / 2);
+ }
+ 
+-var volume_index;
+ function toggle_sound() {
+   if (!is_openbw_module_ready) {
+     return;
+@@ -454,20 +445,33 @@ function update_speed(speed) {
+ 
+ var IMG_URL1 = "http://www.openbw.com/bw/production_icons/icon ";
+ var IMG_URL2 = ".bmp";
+-function set_icon(tab_nr, parent_element, child_nr, icon_id, percentage, info) {
++// Optional display names for tooltips (ported from openbw-replay-viewer v1.4).
++// Kept empty by default to avoid the large lookup tables; tooltips degrade to "".
++function display_name_for_icon(kind, id) { return ""; }
++function set_icon(tab_nr, parent_element, child_nr, icon_id, percentage, info, tooltip) {
+ 
+   if (icon_id < 10) icon_id = "0" + icon_id;
+   if (icon_id < 100) icon_id = "0" + icon_id;
+ 
+   var img_src = IMG_URL1 + icon_id + IMG_URL2;
++  while (parent_element.children("div").length <= child_nr) {
++    parent_element.append('<div><img src=""><span></span><div class="prod_prog_bar"></div></div>');
++  }
+   var element = parent_element.children("div").eq(child_nr);
+   var img_element = element.children("img");
++  if (tab_nr === 2 && element.children("span").length === 0) {
++    element.append('<span></span>');
++  }
+ 
+   if (img_element.attr("src").localeCompare(img_src) != 0) {
+     img_element.attr("src", img_src);
+   }
++  img_element.attr("title", tooltip || "");
++  img_element.attr("alt", tooltip || "");
++  element.attr("title", tooltip || "");
+   if (tab_nr == 2) {
+-    element.children("div").html(info);
++    element.children("span").html(info);
++    element.children("div").first().html("");
+   } else {
+     element.children("div").css("width", Math.round(percentage * 36) + "px");
+   }
+@@ -479,7 +483,12 @@ function set_icon(tab_nr, parent_element, child_nr, icon_id, percentage, info) {
+ 
+ function clear_icon(parent_element, child_nr) {
+ 
+-  var element = parent_element.children("div").eq(child_nr).hide();
++  var element = parent_element.children("div").eq(child_nr);
++  if (element.length) {
++    element.removeAttr("title");
++    element.children("img").removeAttr("title").removeAttr("alt");
++    element.hide();
++  }
+ }
+ 
+ function update_army_tab(complete_units) {
+@@ -513,12 +522,13 @@ function update_army_tab(complete_units) {
+ 
+       var count = unit_types[players[i]][type];
+ 
+-      set_icon(2, element, type_count, type, 1, count);
++      set_icon(2, element, type_count, type, 1, count, display_name_for_icon('unit', type));
+       ++type_count;
+     }
+       for (var j = type_count; j < 20; j++) {
+         clear_icon(element, j);
+       }
++      apply_info_strip_scale(element);
+     }
+ }
+ 
+@@ -592,7 +602,7 @@ var productionUnit_compare = function (unit1, unit2) {
+   return (build_time2 - unit2.remaining_build_time)  - (build_time1 - unit1.remaining_build_time);
+ }
+ 
+-function update_production_tab(incomplete_units) {
++function update_production_tab(incomplete_units, upgrades, researches) {
+ 
+   incomplete_units.sort(productionUnit_compare);
+ 
+@@ -613,7 +623,29 @@ function update_production_tab(incomplete_units) {
+ 
+     var build_percentage = 1 - u.remaining_build_time / build_time;
+ 
+-    unit_names[u.owner].push([t, build_percentage]);
++    unit_names[u.owner].push([t, build_percentage, display_name_for_icon('unit', t)]);
++  }
++
++  if (upgrades) {
++    for (var i = 0; i < upgrades.length; ++i) {
++      var incompleteUpgrades = upgrades[i][2];
++      for (var j = 0; j < incompleteUpgrades.length; ++j) {
++        var upgradeProgress = 1 - incompleteUpgrades[j].remaining_time / incompleteUpgrades[j].total_time;
++        unit_names[upgrades[i][0]].push([incompleteUpgrades[j].icon, upgradeProgress, display_name_for_icon('upgrade', incompleteUpgrades[j].id)]);
++      }
++    }
++  }
++
++  if (researches) {
++    for (var i = 0; i < researches.length; ++i) {
++      var incompleteResearch = researches[i][2];
++      for (var j = 0; j < incompleteResearch.length; ++j) {
++        if ($.inArray(incompleteResearch[j].id, unused_research) == -1) {
++          var researchProgress = 1 - incompleteResearch[j].remaining_time / incompleteResearch[j].total_time;
++          unit_names[researches[i][0]].push([incompleteResearch[j].icon, researchProgress, display_name_for_icon('tech', incompleteResearch[j].id)]);
++        }
++      }
++    }
+   }
+ 
+   var element;
+@@ -624,14 +656,122 @@ function update_production_tab(incomplete_units) {
+       //fill the spots with all units in production for current player
+       for (var j = 0; j != unit_names[players[i]].length; ++j) {
+ 
+-        set_icon(1, element, j, unit_names[players[i]][j][0], unit_names[players[i]][j][1], null);
++        set_icon(1, element, j, unit_names[players[i]][j][0], unit_names[players[i]][j][1], null, unit_names[players[i]][j][2]);
+       }
+ 
+       //clear the unused spots
+       for (var j = unit_names[players[i]].length; j < 100; ++j) {
+         clear_icon(element, j);
+       }
++      apply_info_strip_scale(element);
++    }
++}
++
++function update_tech_tab(upgrades, researches) {
++  for (var i = 0; i < upgrades.length; i++) {
++    var element = $('#upgrade_tab_content' + (i + 1));
++    var slot = 0;
++    var completeUpgrades = upgrades[i][1];
++    for (var j = 0; j < completeUpgrades.length; j++) {
++      var upgradeLevel = completeUpgrades[j].max_level && completeUpgrades[j].max_level <= 1 ? "" : completeUpgrades[j].level;
++      set_icon(3, element, slot++, completeUpgrades[j].icon, 1, upgradeLevel, display_name_for_icon('upgrade', completeUpgrades[j].id));
++    }
++
++    var completeResearch = researches[i][1];
++    for (var j = 0; j < completeResearch.length; j++) {
++      if ($.inArray(completeResearch[j].id, unused_research) == -1) {
++        set_icon(4, element, slot++, completeResearch[j].icon, 1, "", display_name_for_icon('tech', completeResearch[j].id));
++      }
++    }
++
++    for (var j = slot; j < element.children("div").length; ++j) {
++      clear_icon(element, j);
+     }
++    apply_info_strip_scale(element);
++  }
++}
++
++function apply_info_strip_scale(parent_element) {
++  var element = parent_element && parent_element[0];
++  if (!element) return;
++  var visibleChildren = Array.prototype.filter.call(element.children, function(child) {
++    return child.style.display !== 'none';
++  });
++  if (!visibleChildren.length) {
++    element.setAttribute('data-scale', '1');
++    element.style.removeProperty('--tile-width');
++    element.style.removeProperty('--tile-height');
++    element.style.removeProperty('--tile-image-height');
++    element.style.removeProperty('--tile-bar-height');
++    element.style.removeProperty('--tile-badge-font');
++    element.style.removeProperty('--tile-badge-width');
++    element.style.removeProperty('--tile-bar-max');
++    return;
++  }
++  var availableWidth = Math.max(0, element.clientWidth || 0);
++  var isArmyOrTech = /^(army|tech|upgrade)_tab_content/.test(element.id);
++  var fullColumns = isArmyOrTech ? 5 : 10;
++  var base = isArmyOrTech ? {
++    width: 38, height: 38, imageHeight: 38, barHeight: 0, badgeFont: 0.65, badgeWidth: 0.9, barMax: 0
++  } : {
++    width: 36, height: 38, imageHeight: 33, barHeight: 5, badgeFont: 0.65, badgeWidth: 0.9, barMax: 36
++  };
++  var tileGap = 1;
++  if (visibleChildren.length > fullColumns && visibleChildren.length < fullColumns * 2 && availableWidth > 0) {
++    var dynamicWidth = Math.max(1, Math.floor((availableWidth - tileGap * (visibleChildren.length - 1)) / visibleChildren.length));
++    var ratio = dynamicWidth / base.width;
++    element.style.setProperty('--tile-width', dynamicWidth + 'px');
++    element.style.setProperty('--tile-height', Math.max(1, Math.round(base.height * ratio)) + 'px');
++    element.style.setProperty('--tile-image-height', Math.max(1, Math.round(base.imageHeight * ratio)) + 'px');
++    element.style.setProperty('--tile-bar-height', Math.max(0, Math.round(base.barHeight * ratio)) + 'px');
++    element.style.setProperty('--tile-badge-font', Math.max(0.34, base.badgeFont * ratio).toFixed(3) + 'rem');
++    element.style.setProperty('--tile-badge-width', Math.max(0.45, base.badgeWidth * ratio).toFixed(3) + 'rem');
++    element.style.setProperty('--tile-bar-max', Math.max(0, Math.round(base.barMax * ratio)) + 'px');
++    element.setAttribute('data-scale', 'dynamic');
++    return;
++  }
++  element.style.removeProperty('--tile-width');
++  element.style.removeProperty('--tile-height');
++  element.style.removeProperty('--tile-image-height');
++  element.style.removeProperty('--tile-bar-height');
++  element.style.removeProperty('--tile-badge-font');
++  element.style.removeProperty('--tile-badge-width');
++  element.style.removeProperty('--tile-bar-max');
++  var scale = 4;
++  var tileWidths = isArmyOrTech ? { 1: 38, 2: 18, 3: 12, 4: 9 } : { 1: 36, 2: 17, 3: 12, 4: 9 };
++  if (availableWidth > 0) {
++    [1, 2, 3, 4].some(function(candidate) {
++      var rows = candidate === 1 ? 1 : candidate;
++      var columns = Math.max(1, Math.floor((availableWidth + tileGap) / (tileWidths[candidate] + tileGap)));
++      if (columns * rows >= visibleChildren.length) {
++        scale = candidate;
++        return true;
++      }
++      return false;
++    });
++  }
++  element.setAttribute('data-scale', String(scale));
++}
++
++function refresh_info_tab_scales() {
++  $('#info_tab .info_tab_content').each(function() {
++    apply_info_strip_scale($(this));
++  });
++}
++
++function move_info_tab_to_dock() {
++  var infoTab = document.getElementById("info_tab");
++  var infoDock = document.getElementById("info-dock-body");
++  if (!infoTab || !infoDock) return false;
++  if (infoTab.parentElement === infoDock) return true;
++  try {
++    infoTab.draggable = false;
++    infoDock.appendChild(infoTab);
++    infoTab.style.display = "block";
++    try { $('#info_tab').foundation('_reflow'); } catch (e) {}
++    refresh_info_tab_scales();
++    return true;
++  } catch (e) { return false; }
+ }
+ 
+ function update_timer(sec_num) {
+diff --git a/replays/static/replays/viewer/start.js b/replays/static/replays/viewer/start.js
+index 5496f4c..0771f00 100644
+--- a/replays/static/replays/viewer/start.js
++++ b/replays/static/replays/viewer/start.js
+@@ -118,30 +118,19 @@ function update_graphs(frame) {
+  */
+ function update_info_tab() {
+ 
+-  if ($('#info_tab').is(":visible")) {
+-
+-    var funcs = Module.get_util_funcs();
+-
+-    if ($('#info_tab_panel1').hasClass("is-active")) {
+-      update_production_tab(funcs.get_all_incomplete_units());
+-    } else if ($('#info_tab_panel2').hasClass("is-active")) {
+-      update_army_tab(funcs.get_all_completed_units());
+-    } else if ($('#info_tab_panel3').hasClass("is-active")) {
+-
+-      var upgrades = [];
+-      for (var i = 0; i < players.length; i++) {
+-        upgrades.push([players[i], funcs.get_completed_upgrades(players[i]), funcs.get_incomplete_upgrades(players[i])]);
+-      }
+-      update_upgrades_tab(upgrades);
+-    } else if ($('#info_tab_panel4').hasClass("is-active")) {
+-
+-      var researches = [];
+-      for (var i = 0; i < players.length; i++) {
+-        researches.push([players[i], funcs.get_completed_research(players[i]), funcs.get_incomplete_research(players[i])]);
+-      }
+-      update_research_tab(researches);
+-    }
++  if (!$('#info_tab').is(":visible")) return;
++
++  var funcs = Module.get_util_funcs();
++  var upgrades = [];
++  var researches = [];
++  for (var i = 0; i < players.length; i++) {
++    upgrades.push([players[i], funcs.get_completed_upgrades(players[i]), funcs.get_incomplete_upgrades(players[i])]);
++    researches.push([players[i], funcs.get_completed_research(players[i]), funcs.get_incomplete_research(players[i])]);
+   }
++  update_production_tab(funcs.get_all_incomplete_units(), upgrades, researches);
++  update_army_tab(funcs.get_all_completed_units());
++  update_tech_tab(upgrades, researches);
++  if (typeof refresh_info_tab_scales === "function") refresh_info_tab_scales();
+ }
+ 
+ /**
+@@ -540,6 +529,11 @@ function start_replay(arr, callback_when_done) {
+   _load_replay(buffer, length);
+   _free(buffer);
+ 
++  try {
++    _replay_set_value(0, 4);
++    if (typeof update_speed === "function") update_speed(4);
++  } catch (e) {}
++
+   first_frame_played = false;
+ 
+   players = [];
+@@ -578,6 +572,8 @@ function start_replay(arr, callback_when_done) {
+     $('.5player').hide();
+     $('.infobar-player div').css("padding", "5px 5px 5px 5px");
+   }
++  if (typeof move_info_tab_to_dock === "function") move_info_tab_to_dock();
++  if (typeof update_info_tab === "function") update_info_tab();
+ }
+ 
+ var all_readers = [];
+diff --git a/replays/templates/replays/game_area.html b/replays/templates/replays/game_area.html
+index de4a3a5..70bae3e 100644
+--- a/replays/templates/replays/game_area.html
++++ b/replays/templates/replays/game_area.html
+@@ -6,8 +6,8 @@
+     <li class="tabs-title is-active"><a id="tab_link1" href="#info_tab_panel1"
+       aria-selected="true">Production</a></li>
+     <li class="tabs-title"><a id="tab_link2" href="#info_tab_panel2">Army</a></li>
+-    <li class="tabs-title"><a id="tab_link3" href="#info_tab_panel3">Upgrades</a></li>
+-    <li class="tabs-title"><a id="tab_link4" href="#info_tab_panel4">Research</a></li>
++    <li class="tabs-title"><a id="tab_link3" href="#info_tab_panel3">Tech</a></li>
++    <li class="tabs-title info-tab-hidden"><a id="tab_link4" href="#info_tab_panel4">Research</a></li>
+   </ul>
+   <div class="tabs-content" data-tabs-content="info-tabs">
+     <div class="tabs-panel is-active" id="info_tab_panel1">
+diff --git a/replays/templates/replays/resources_and_time_controls.html b/replays/templates/replays/resources_and_time_controls.html
+index 0c48e45..b026556 100644
+--- a/replays/templates/replays/resources_and_time_controls.html
++++ b/replays/templates/replays/resources_and_time_controls.html
+@@ -109,6 +109,15 @@
+ 
+           </div>
+ 
++  <div id="info-dock" class="shrink column bottom-info-dock">
++    <div class="info-dock-header">
++      <div class="info-dock-title">Production</div>
++      <div class="info-dock-title">Army</div>
++      <div class="info-dock-title">Tech</div>
++    </div>
++    <div id="info-dock-body"></div>
++  </div>
++
+   <div class="shrink column replay-control">
+ 
+     <div class="row rv-rc-controls">

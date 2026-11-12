@@ -10,6 +10,8 @@ Tested on Ubuntu, October 2026.
 - 🖼️ `.canvas-area { margin:-1px; }` edge fix
 - 🔊 Sound fixed: SDL_mixer backend enabled at build time (upstream mutes it), volume defaults to 50%, audio unlocks on first interaction
 - 🌙 Dark mode toggle in the navbar (`Dark mode` / `Light mode`, persisted in `localStorage`, respects `prefers-color-scheme`); text inputs, selects, and `#game-slider` use `background-color: #b1b1b1`
+- 📐 Narrower debugger sidebar (`.sidebar-cdb` `25vw` instead of `30vw`)
+- 🧩 Reproducible fixes: every change stored as `cvis-*.diff`, applied in `Dockerfile` order; `verify_fixes.sh` fails the build loudly on upstream drift; see `FIXES.md`
 
 ## Usage
 

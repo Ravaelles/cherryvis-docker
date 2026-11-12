@@ -1,5 +1,23 @@
 # Changelog
 
+## Unreleased — reproducible fixes (requires image rebuild)
+
+Live-only container changes are now stored as reviewable patches, so a
+fresh `docker build -t cvis .` reproduces them:
+
+- `cvis-bottom-dock.diff` (new): Production / Army / Tech strips in an
+  always-visible bottom dock (`game_area.html` Tech label, `resources...`
+  dock markup, `infobar.css` dock styles, dock-only `infobar.js`/`start.js`
+  logic incl. 4x default speed). Sound handling excluded by decision.
+- `cvis-track-select.diff` (new): selecting a single unit/task auto-fires
+  `Track` and activates its tab (`cvis_dbg_lib.js`, `cvis_dbg_unitslist.js`)
+- `cvis-sidebar-width.diff` (new): `.sidebar-cdb` `30vw` -> `25vw`
+- `verify_fixes.sh` (new): fails the build loudly when a committed fix is
+  missing; `sh verify_fixes.sh --audit` reports the skipped sound build
+- `FIXES.md` (new): fix catalog with re-apply instructions
+- `Dockerfile`: apply steps for the three patches plus the verify step
+- Sound fix stays out of scope (needs a WASM rebuild; binaries not committed)
+
 ## Unreleased — dark mode (repo-visible, requires image rebuild)
 
 Dark mode for the replay list page, implemented as a repository patch so the

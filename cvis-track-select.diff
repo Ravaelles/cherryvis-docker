@@ -1,0 +1,83 @@
+diff --git a/replays/static/replays/cdb/cvis_dbg_lib.js b/replays/static/replays/cdb/cvis_dbg_lib.js
+index cc7eca5..d0cef45 100644
+--- a/replays/static/replays/cdb/cvis_dbg_lib.js
++++ b/replays/static/replays/cdb/cvis_dbg_lib.js
+@@ -7,6 +7,26 @@
+ 
+ "use strict";
+ 
++// Activate a newly tracked tab in #cherrypi-state-tabs-nav programmatically.
++// Uses Bootstrap's tab API so both the nav link (active) and the pane (active show)
++// are updated; falls back to a click when the plugin is unavailable.
++// Retries briefly because the nav item is built on the next CDB update,
++// which may be delayed while the replay is paused.
++function cvis_activate_tracked_tab(tabSelector, retriesLeft) {
++  if (retriesLeft === undefined) retriesLeft = 10;
++  var link = $('#cherrypi-state-tabs-nav a[href="' + tabSelector + '"]');
++  if (link && link.length) {
++    if (typeof link.tab === "function") link.tab('show');
++    else link.click();
++    return;
++  }
++  if (retriesLeft > 0) {
++    setTimeout(function() {
++      cvis_activate_tracked_tab(tabSelector, retriesLeft - 1);
++    }, 40);
++  }
++}
++
+ const XYPixelsPerWalktile = 8;
+ 
+ function cvis_dbg_lib_init(global_data, cvis_state) {
+@@ -187,14 +207,22 @@ function cvis_dbg_lib_init(global_data, cvis_state) {
+     html.find('button.track-task-btn').click(function(e) {
+       e.preventDefault();
+       var task_id = $(this).attr('data-task-id');
+-      if (task_id)
++      if (task_id) {
+         cvis_state.functions.task_track(parseInt(task_id));
++        setTimeout(function() {
++          cvis_activate_tracked_tab('#task_tracked_cp' + task_id);
++        }, 40);
++      }
+     });
+     html.find('button.track-unit-btn').click(function(e) {
+       e.preventDefault();
+       var unit_id = $(this).attr('data-unit-id');
+-      if (unit_id)
++      if (unit_id) {
+         cvis_state.functions.unit_track(parseInt(unit_id));
++        setTimeout(function() {
++          cvis_activate_tracked_tab('#unit_tracked_cp' + unit_id);
++        }, 40);
++      }
+     });
+   }
+ 
+diff --git a/replays/static/replays/cdb/cvis_dbg_unitslist.js b/replays/static/replays/cdb/cvis_dbg_unitslist.js
+index f52def1..386ae1a 100644
+--- a/replays/static/replays/cdb/cvis_dbg_unitslist.js
++++ b/replays/static/replays/cdb/cvis_dbg_unitslist.js
+@@ -243,6 +243,22 @@ function cvis_dbg_unitslist_update_selected(global_data, cvis_state) {
+     $('.hide-if-units-selected').show();
+   }
+ 
++  // Auto-track a lone selected unit and jump to its tab.
++  // Keeps a single tracked tab: all other tracked unit tabs are closed first.
++  if (units_selected.length === 1) {
++    var only = units_selected[0];
++    if (only && only.found && only.id >= 0 && !cvis_state.functions.unit_istracked(only.id)) {
++      var tracked_units = ((cvis_state.unitslist && cvis_state.unitslist.tracked) || []).map(function(e) { return e.unit_id; });
++      for (var ti = 0; ti < tracked_units.length; ++ti) {
++        if (tracked_units[ti] !== only.id) cvis_state.functions.unit_untrack(tracked_units[ti]);
++      }
++      cvis_state.functions.unit_track(only.id);
++      setTimeout(function() {
++        cvis_activate_tracked_tab('#unit_tracked_cp' + only.id);
++      }, 40);
++    }
++  }
++
+   cvis_state.functions.unitslist_update(
+     $('#cdbSelectedUnitsView'),
+     units_selected,

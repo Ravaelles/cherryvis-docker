@@ -1,0 +1,13 @@
+diff --git a/replays/static/replays/layout.css b/replays/static/replays/layout.css
+index 5ebb2b6..4d7ab1d 100644
+--- a/replays/static/replays/layout.css
++++ b/replays/static/replays/layout.css
+@@ -288,7 +288,7 @@ a.article:hover {
+ .sidebar-cdb {
+   background: #000000;
+   min-width: 400px;
+-  width: 30vw;
++  width: 25vw;
+ }
+ 
+ .sidebar-cdb.active {

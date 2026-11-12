@@ -41,6 +41,33 @@ RUN cd /src/TorchCraftAI/scripts/cherryvis \
 	&& git apply /tmp/cvis-darkmode.diff \
 	&& rm /tmp/cvis-darkmode.diff
 
+# Bottom info dock: Production / Army / Tech strips in an always-visible
+# bottom dock with auto-shrinking tiles. Dock-only changes; sound handling
+# is intentionally excluded (see FIXES.md).
+COPY cvis-bottom-dock.diff /tmp/cvis-bottom-dock.diff
+RUN cd /src/TorchCraftAI/scripts/cherryvis \
+	&& git apply /tmp/cvis-bottom-dock.diff \
+	&& rm /tmp/cvis-bottom-dock.diff
+
+# Track-on-select in the debugger sidebar: selecting a single unit or task
+# auto-activates its tab (single tracked tab at a time).
+COPY cvis-track-select.diff /tmp/cvis-track-select.diff
+RUN cd /src/TorchCraftAI/scripts/cherryvis \
+	&& git apply /tmp/cvis-track-select.diff \
+	&& rm /tmp/cvis-track-select.diff
+
+# Narrow debugger sidebar: .sidebar-cdb 30vw -> 25vw for a wider game view.
+COPY cvis-sidebar-width.diff /tmp/cvis-sidebar-width.diff
+RUN cd /src/TorchCraftAI/scripts/cherryvis \
+	&& git apply /tmp/cvis-sidebar-width.diff \
+	&& rm /tmp/cvis-sidebar-width.diff
+
+# Fail the build loudly if any committed fix is missing (upstream drift).
+COPY verify_fixes.sh /tmp/verify_fixes.sh
+RUN cd /src/TorchCraftAI/scripts/cherryvis \
+	&& sh /tmp/verify_fixes.sh \
+	&& rm /tmp/verify_fixes.sh
+
 FROM python:3.10-alpine
 
 COPY --from=builder /src/TorchCraftAI/scripts/cherryvis .
